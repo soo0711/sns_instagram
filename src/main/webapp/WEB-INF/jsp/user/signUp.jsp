@@ -53,7 +53,35 @@
 		
 		// 아이디 중복 확인
 		$("#loginIdCheckBtn").on("click", function() {
+			// 경고 문구 초기화
+			$("#idCheckLength").addClass("d-none");
+			$("#idCheckDuplicated").addClass("d-none");
+			$("#idCheckOk").addClass("d-none");
+			
 			// alert("중복 확인");
+			
+			let loginId = $("#loginId").val().trim();
+			
+			// 4자 이하
+			if (loginId.length < 4){
+				$("#idCheckLength").removeClass("d-none");
+				return;
+			}
+			
+			// 중복 확인
+			$.get("/user/is-duplicated-id", {"loginId":loginId}) // request
+			.done(function(data) { //response
+				if (data.code == 200){
+					if (data.is_duplicated){
+						$("#idCheckDuplicated").removeClass("d-none");
+					} else {
+						$("#idCheckOk").removeClass("d-none");
+					}
+				} else {
+					alert(data.error_message);
+				}
+			}); // - ajax get
+			
 		}); // - id 중복 확인
 		
 		// 회원가입
@@ -93,7 +121,24 @@
 				return false;
 			}
 			
+			// 사용 가능이라고 떠야지만 가능
+			if ($("#idCheckOk").hasClass("d-none")){
+				alert("아이디 중복확인을 다시 해주세요.")
+				return false;
+			}
+			
 			// ajax 회원가입
+			let url = $(this).attr("action");
+			let params = $(this).serialize();
+			
+			$.post(url, params)
+			.done(function(data) { // request
+				if (data.code == 200){ // response
+					location.href = "/user/sing-in-view";
+				} else {
+					alert(data.error_message);
+				}
+			}) // - ajax post
 			
 		}); // - signUpBtn
 	}); // - document
