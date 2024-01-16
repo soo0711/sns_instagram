@@ -8,4 +8,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer>{
 
 	// null or UserEntity
 	public UserEntity findByLoginId(String loginId);
+	
+	// null or UserEntity
+	public UserEntity findByLoginIdAndPassword(String loginId, String password);
 }

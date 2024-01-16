@@ -28,3 +28,39 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	$(document).ready(function() {
+		$("#loginForm").on("submit", function(e) {
+			e.preventDefault();
+			// alert("login");
+			
+			// vaildation
+			let loginId = $("#loginId").val().trim();
+			let password = $("#password").val();
+			
+			if (!loginId){
+				alert("아이디를 입력해주세요.")
+				return false;
+			}
+			
+			if (!password){
+				alert("비밀번호를 입력해주세요.")
+				return false;
+			}
+			
+			let url = $(this).attr("action");
+			let params = $(this).serialize();
+			
+			$.post(url, params) // request
+			.done(function(data) { // response
+				if (data.result == "성공"){
+					location.href = "/timeline/list-view"
+				} else {
+					alert(data.error_message);
+				}
+			}); // - ajax post
+			
+		}); // - loginForm
+	});
+</script>

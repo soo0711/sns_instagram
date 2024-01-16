@@ -8,7 +8,7 @@
 	
 	<%-- 로그인 정보 --%>
 	<div class="mr-4">
-		<span>보람님 안녕하세요</span>
+		<span>${userName }님 안녕하세요</span>
 		<a href="/user/sign-out">로그아웃</a>
 	</div>
 </div>
