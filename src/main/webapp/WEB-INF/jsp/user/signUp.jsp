@@ -134,7 +134,7 @@
 			$.post(url, params)
 			.done(function(data) { // request
 				if (data.code == 200){ // response
-					location.href = "/user/sing-in-view";
+					location.href = "/user/sign-in-view";
 				} else {
 					alert(data.error_message);
 				}

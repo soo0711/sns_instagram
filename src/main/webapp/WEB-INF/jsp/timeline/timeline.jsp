@@ -22,7 +22,7 @@
 							<h5>${post.userId }</h5>
 							<a href="#"><img src="/static/img/etc_icon.png" width="20" alt="더보기 버튼"></a>
 						</div>
-						<img src="${post.imagePath }" alt="사진" class="w-100 p-3">
+						<img src="${post.imagePath }" alt="사진" class="p-3" width="800"> 
 						<div class="d-flex ml-2">
 							<img src="/static/img/heart-icon.png" alt="좋아요" width="30">
 							<span class="ml-2">좋아요 11개</span>
