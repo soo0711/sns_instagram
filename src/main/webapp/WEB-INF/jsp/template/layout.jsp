@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MEMO 게시판</title>
+<title>Instagram</title>
 
 <%-- bootstrap --%>
 <link rel="stylesheet"
