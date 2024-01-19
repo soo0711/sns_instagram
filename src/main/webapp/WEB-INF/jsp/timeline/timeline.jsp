@@ -25,36 +25,42 @@
 					</div>
 				</c:if>
 				<%-- 타임라인 화면 --%>
-				<c:forEach items="${postList }" var="post">
+				<c:forEach items="${cardViewList }" var="card">
 					<div class="border mt-5">
 						<div class="snsIdCss d-flex justify-content-between align-items-center w-100 px-3 bg-light">
-							<h5>${post.userId }</h5>
+							<h5>${card.post.userId }</h5>
 							<a href="#"><img src="/static/img/etc_icon.png" width="20" alt="더보기 버튼"></a>
 						</div>
-						<img src="${post.imagePath }" alt="사진" class="p-3" width="800"> 
+						<img src="${card.post.imagePath }" alt="사진" class="p-3" width="800"> 
 						<div class="d-flex ml-2">
 							<img src="/static/img/heart-icon.png" alt="좋아요" width="30">
 							<span class="ml-2">좋아요 11개</span>
 						</div>
 						<div class="ml-4 snsIdCss d-flex align-items-center">
-							<span class="mr-2 font-weight-bold">${post.userId }</span>
-							<span>${post.content }</span>
+							<span class="mr-2 font-weight-bold">${card.post.userId }</span>
+							<span>${card.post.content }</span>
 						</div>
-						<div class="font-weight-bold ml-2 mb-2">댓글</div>
-						<div class="border-top p-3">
-							<div>
-								<span class="font-weight-bold ml-2">soo : </span>
-								<span>안녕하세요</span>
+						<%-- 댓글 쓰기 --%>
+							<div class="font-weight-bold ml-2 mb-2">댓글</div>
+							<div class="border-top p-2">
+								<c:forEach items="${commentList}" var="comment">
+								<c:if test="${comment.postId eq post.id}">
+								<div class="my-2 d-flex justify-content-between">
+									<div>
+									<span class="font-weight-bold ml-2">댓글쓰니${comment.userId } : </span>
+									<span class="ml-2">${comment.content }</span>
+									</div>
+									<c:if test="${userId eq comment.userId}">
+									<span class="mr-2"><a href="#" class="deleteComment" data-comment-id="${comment.id }">x</a></span>
+									</c:if>
+								</div>
+								</c:if>
+								</c:forEach>
 							</div>
-							<div>
-								<span class="font-weight-bold ml-2">hyun : </span>
-								<span>인스타그램!!</span>
+							<div class="border-top d-flex justify-content-between pl-2">
+								<input type="text" placeholder="댓글 달기" class="border-0 form-control col-10">
+								<button type="button" class="comment-btn btn btn-light border-0" data-user-id="${userId }" data-post-id="${post.id }">게시</button>
 							</div>
-						</div>
-						<div class="border-top d-flex justify-content-between pl-2">
-							<input type="text" placeholder="댓글 달기" class="border-0 form-control col-10">
-							<button id="commentBtn" class="btn btn-light border-0">게시</button>
-						</div>
 					</div>
 				</c:forEach>
 			</div>
@@ -157,7 +163,78 @@
 				
 			}) // - ajax
 			
-		})
+		});
+		
+		$(".comment-btn").on("click", function() {
+			// alert("댓글 쓰기");
+			let userId = $(this).data("user-id");
+			// alert(userId);
+			if (!userId){
+				// 비로그인이면 로그인 화면 이동
+				alert("로그인을 해주세요.");
+				location.href="/user/sign-in-view";
+				return;
+			}
+			
+			// 글 번호
+			let postId = $(this).data("post-id");
+			// alert(postId);
+			
+			// 댓글 내용 가져오기 
+			// 1) 이전 태그 값 가져오기
+			// let content = $(this).prev().val(); //하나 전 태그 -> input
+
+			
+			// 2) 형제 태그 중 input 값 가져오기
+			let content = $(this).siblings("input").val().trim();
+			//alert(content);
+			
+			
+			$.ajax ({ // request
+				type: "POST"
+				, url: "/comment/create"
+				, data: {"postId" : postId, "content" : content}
+			
+				// response
+				, success: function(data) {
+					if (data.code == 200){
+						alert("댓글 등록 완료!");
+						location.reload(true);
+					} else {
+						alert(data.errror_message);
+					}
+				}
+				, error: function(request, status, error){
+					alert("댓글 등록에 실패했습니다. 관리자에게 문의 바랍니다.")
+				}
+				
+			}); // - comment ajax
+		}); // - comment
+		
+		$(".deleteComment").on("click", function() {
+			if (confirm("댓글 삭제")){
+				// ajax
+				let commentId = $(this).data("comment-id");
+				// alert(commentId);
+				$.ajax({ // request
+					type: "POST"
+					, url: "/commet/delete"
+					, data: {"commentId" : commentId}
+				
+					// response
+					, success: function(data) {
+						if (data.code == 200){
+							alert("댓글이 삭제 되었습니다.")
+						} else {
+							alert(data.error_message);
+						}
+					}
+					, error: function(reqeust, status, error){
+						alert("댓글 삭제에 실패했습니다. 관리자에게 문의주세요.")
+					}
+				}); // - comment delete ajax
+			}
+		}); // - delete comment
 		
 	}); // - document
 </script>
