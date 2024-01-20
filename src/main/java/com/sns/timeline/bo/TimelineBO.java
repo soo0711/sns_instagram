@@ -26,13 +26,10 @@ public class TimelineBO {
 		List<PostEntity> post = postBO.getPostEntityList(); 
 		
 		// 글 목록 반복문 순회
-		CardView cv = new CardView();
-		
 		for (PostEntity p : post) {
-			int i = 0;
+			CardView cv = new CardView();
 			cv.setPost(p);
-			cardViewList.add(i, cv);	
-			i ++;
+			cardViewList.add(cv);	
 		}
 		
 		return cardViewList;

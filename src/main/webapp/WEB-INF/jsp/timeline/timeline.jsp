@@ -4,7 +4,7 @@
 <div>
 	<div class="d-flex justify-content-center">
 		<div class="w-50 d-flex justify-content-center">
-			<div>
+			<div class="w-100">
 				<%-- 글 쓰기 화면 --%>
 				<c:if test="${not empty userId }">
 					<div class="border p-2">
