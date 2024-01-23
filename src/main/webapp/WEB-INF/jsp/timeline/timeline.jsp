@@ -28,7 +28,7 @@
 				<c:forEach items="${cardViewList }" var="card">
 					<div class="border mt-5">
 						<div class="snsIdCss d-flex justify-content-between align-items-center w-100 px-3 bg-light">
-							<h5>${card.post.userId }</h5>
+							<h5>${card.user.loginId }</h5>
 							<a href="#"><img src="/static/img/etc_icon.png" width="20" alt="더보기 버튼"></a>
 						</div>
 						<img src="${card.post.imagePath }" alt="사진" class="p-3" width="800"> 
@@ -37,29 +37,27 @@
 							<span class="ml-2">좋아요 11개</span>
 						</div>
 						<div class="ml-4 snsIdCss d-flex align-items-center">
-							<span class="mr-2 font-weight-bold">${card.post.userId }</span>
+							<span class="mr-2 font-weight-bold">${card.user.loginId }</span>
 							<span>${card.post.content }</span>
 						</div>
 						<%-- 댓글 쓰기 --%>
 							<div class="font-weight-bold ml-2 mb-2">댓글</div>
 							<div class="border-top p-2">
-								<c:forEach items="${commentList}" var="comment">
-								<c:if test="${comment.postId eq post.id}">
+								<c:forEach items="${card.commentList }" var="commentView">
 								<div class="my-2 d-flex justify-content-between">
-									<div>
-									<span class="font-weight-bold ml-2">댓글쓰니${comment.userId } : </span>
-									<span class="ml-2">${comment.content }</span>
-									</div>
-									<c:if test="${userId eq comment.userId}">
-									<span class="mr-2"><a href="#" class="deleteComment" data-comment-id="${comment.id }">x</a></span>
-									</c:if>
+										<div>
+										<span class="font-weight-bold ml-2">${commentView.user.loginId } : </span>
+										<span class="ml-2">${commentView.comment.content }</span>
+										</div>
+										<c:if test="${userId eq commentView.comment.userId}">
+										<span class="mr-2"><a class="comment-del-btn" data-comment-id="${commentView.comment.id }">x</a></span>
+										</c:if>
 								</div>
-								</c:if>
 								</c:forEach>
 							</div>
 							<div class="border-top d-flex justify-content-between pl-2">
 								<input type="text" placeholder="댓글 달기" class="border-0 form-control col-10">
-								<button type="button" class="comment-btn btn btn-light border-0" data-user-id="${userId }" data-post-id="${post.id }">게시</button>
+								<button type="button" class="comment-btn btn btn-light border-0" data-user-id="${userId }" data-post-id="${card.post.id }">게시</button>
 							</div>
 					</div>
 				</c:forEach>
@@ -211,20 +209,22 @@
 			}); // - comment ajax
 		}); // - comment
 		
-		$(".deleteComment").on("click", function() {
+
+		$(".comment-del-btn").on("click", function() {
 			if (confirm("댓글 삭제")){
 				// ajax
 				let commentId = $(this).data("comment-id");
 				// alert(commentId);
 				$.ajax({ // request
 					type: "POST"
-					, url: "/commet/delete"
+					, url: "/comment/delete"
 					, data: {"commentId" : commentId}
 				
 					// response
 					, success: function(data) {
 						if (data.code == 200){
 							alert("댓글이 삭제 되었습니다.")
+							location.reload(true);
 						} else {
 							alert(data.error_message);
 						}

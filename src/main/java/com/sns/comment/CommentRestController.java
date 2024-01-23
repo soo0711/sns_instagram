@@ -41,12 +41,10 @@ public class CommentRestController {
 	
 	@PostMapping("/delete")
 	public  Map<String, Object> delete(
-			@RequestParam("commentId") int commentId
-			,HttpSession session){
-		int userId = (int) session.getAttribute("userId");
+			@RequestParam("commentId") int commentId){
 		
 		// DB delete
-		// 만들기
+		commentBO.deleteCommentById(commentId);
 		
 		// 응답값
 		Map<String, Object> result = new HashMap<>();
@@ -55,4 +53,5 @@ public class CommentRestController {
 		
 		return result;
 	}
+
 }

@@ -2,13 +2,10 @@ package com.sns.comment.domain;
 
 import java.util.Date;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.ToString;
 
-@Getter
-@Builder
+@Data
 @ToString
 public class Comment {
 	private int id;
