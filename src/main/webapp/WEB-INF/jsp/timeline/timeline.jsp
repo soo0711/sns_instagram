@@ -33,8 +33,17 @@
 						</div>
 						<img src="${card.post.imagePath }" alt="사진" class="p-3" width="800"> 
 						<div class="d-flex ml-2">
-							<img src="/static/img/heart-icon.png" alt="좋아요" width="30">
-							<span class="ml-2">좋아요 11개</span>
+							<c:if test="${card.filledLike}">
+							<a href="#" class="is-heart" data-post-id="${card.post.id }">
+								<img src="/static/img/fill-heart-icon.png" alt="좋아요" width="30" id="imgIcon">
+							</a>
+							</c:if>
+							<c:if test="${!card.filledLike}">
+							<a href="#" class="is-heart" data-post-id="${card.post.id }">
+								<img src="/static/img/heart-icon.png" alt="좋아요" width="30" id="imgIcon">
+							</a>
+							</c:if>
+							<span class="ml-2">좋아요 ${card.likeCount }개</span>
 						</div>
 						<div class="ml-4 snsIdCss d-flex align-items-center">
 							<span class="mr-2 font-weight-bold">${card.user.loginId }</span>
@@ -50,7 +59,7 @@
 										<span class="ml-2">${commentView.comment.content }</span>
 										</div>
 										<c:if test="${userId eq commentView.comment.userId}">
-										<span class="mr-2"><a class="comment-del-btn" data-comment-id="${commentView.comment.id }">x</a></span>
+										<span class="mr-2"><a href="#" class="comment-del-btn" data-comment-id="${commentView.comment.id }">x</a></span>
 										</c:if>
 								</div>
 								</c:forEach>
@@ -210,13 +219,14 @@
 		}); // - comment
 		
 
-		$(".comment-del-btn").on("click", function() {
+		$(".comment-del-btn").on("click", function(e) {
+			e.preventDefault();
 			if (confirm("댓글 삭제")){
 				// ajax
 				let commentId = $(this).data("comment-id");
 				// alert(commentId);
 				$.ajax({ // request
-					type: "POST"
+					type: "DELETE"
 					, url: "/comment/delete"
 					, data: {"commentId" : commentId}
 				
@@ -236,5 +246,30 @@
 			}
 		}); // - delete comment
 		
+		// 좋아요 토글
+		$(".is-heart").on("click", function(e){
+			e.preventDefault();
+			// alert("좋아요");
+			let postId = $(this).data("post-id");
+			// console.log(postId);
+			$.ajax({
+				url: "/like/" + postId  // /like/13
+			
+				, success: function(data){
+					if (data.code == 200){
+						// 토글만 하는 곳
+						location.reload(true);
+					} else if(data.code == 300){
+						alert(data.error_messgae);
+						location.href="/user/sign-in-view";
+					}
+				}
+				, error: function(request, status, error){
+					alert("좋아요를 하는데 실패했습니다. 관리자에게 문의해주세요.");
+				}
+			}); // -ajax
+			
+		}); // - heart
+	
 	}); // - document
 </script>
