@@ -35,12 +35,12 @@
 						<div class="d-flex ml-2">
 							<c:if test="${card.filledLike}">
 							<a href="#" class="is-heart" data-post-id="${card.post.id }">
-								<img src="/static/img/fill-heart-icon.png" alt="좋아요" width="30" id="imgIcon">
+								<img src="/static/img/fill-heart-icon.png" alt="좋아요" width="30" id="heartIcon">
 							</a>
 							</c:if>
 							<c:if test="${!card.filledLike}">
 							<a href="#" class="is-heart" data-post-id="${card.post.id }">
-								<img src="/static/img/heart-icon.png" alt="좋아요" width="30" id="imgIcon">
+								<img src="/static/img/heart-icon.png" alt="좋아요" width="30" id="filledHeart">
 							</a>
 							</c:if>
 							<span class="ml-2">좋아요 ${card.likeCount }개</span>
