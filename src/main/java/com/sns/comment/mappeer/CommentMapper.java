@@ -25,5 +25,8 @@ public interface CommentMapper {
 	// input: commentId		output: X
 	public void deleteCommentById(int commentId);
 	
+	// input: postId	output: X
+	public void deleteCommentByPostId(int postId);
+	
 	
 }

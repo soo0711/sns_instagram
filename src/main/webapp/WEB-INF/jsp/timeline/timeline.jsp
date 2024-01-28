@@ -29,9 +29,14 @@
 					<div class="border mt-5">
 						<div class="snsIdCss d-flex justify-content-between align-items-center w-100 px-3 bg-light">
 							<h5>${card.user.loginId }</h5>
-							<a href="#"><img src="/static/img/etc_icon.png" width="20" alt="더보기 버튼"></a>
+							<%-- (더보기 ... 버튼) 로그인 된 사람과 글쓴이 정보가 일치할 때 노출 --%>
+							<c:if test="${userId eq card.post.userId }">
+							<a href="#" class="more-btn" data-toggle="modal" data-target="#modal" data-post-id="${card.post.id }">
+								<img src="/static/img/etc_icon.png" width="20" alt="더보기 버튼">
+							</a>
+							</c:if>
 						</div>
-						<img src="${card.post.imagePath }" alt="사진" class="p-3" width="800"> 
+						<img src="${card.post.imagePath }" alt="사진" class="p-3 w-100" > 
 						<div class="d-flex ml-2">
 							<c:if test="${card.filledLike}">
 							<a href="#" class="is-heart" data-post-id="${card.post.id }">
@@ -71,6 +76,25 @@
 					</div>
 				</c:forEach>
 			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-post-id="">
+	<%-- 
+		modal-sm: 작은 모달창
+		modal-dialog-centerd: 수직 기준 가운데 위치
+	 --%>
+	<div class="modal-dialog modal-sm modal-dialog-centered">
+		<div class="modal-content text-center">
+			<div class="py-3 border-bottom">
+      			<a href="#" id="postDelete">삭제하기</a>
+      		</div>
+			<div class="py-3">
+				<%-- data-dismiss="modal": 창 닫기 --%>
+      			<a href="#" data-dismiss="modal">취소하기</a>
+      		</div>
 		</div>
 	</div>
 </div>
@@ -270,6 +294,46 @@
 			}); // -ajax
 			
 		}); // - heart
+		
+		$(".more-btn").on("click", function(e) {
+			e.preventDefault(); // a 태그 올라가는 현상 방지
+			// alert("더보기 버튼 클릭");
+			let postId = $(this).data("post-id"); 	// getting
+			// alert(postId);
+			
+			// 1개로 존재하는 모달에 재활용을 위해 data-post-id를 심는다. (...을 누를때 마다)
+			$("#modal").data("post-id", postId) 	//setting
+			
+		}); // - morebtn
+		
+		// 모달 안에 있는 삭제하기 클릭
+		$("#modal #postDelete").on("click", function(e){
+			e.preventDefault();
+			// alert("삭제하기");
+			
+			let postId = $("#modal").data("post-id");
+			// alert(postId);
+			
+			$.ajax({
+				type: "DELETE"
+				, url: "/post/delete"
+				, data: {"postId" : postId}
+			
+				, success: function(data) {
+					if (data.code == 200){
+						alert("삭제 되었습니다.");
+						location.reload(true);
+					} else {
+						alert(data.error_message);
+						location.href = "/user/sign-in-view";
+					}
+				}
+				, error (request, status, error){
+					alert("글 삭제에 실패했습니다. 관리자에게 문의주세요.")
+				}
+			}) // - delete
+			
+		}); // - delete plus btn
 	
 	}); // - document
 </script>

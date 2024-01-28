@@ -9,7 +9,9 @@ import java.nio.file.Paths;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class FileManagerService {
 
@@ -17,7 +19,7 @@ public class FileManagerService {
 	// public static final String FILE_UPLOAD_PATH = "D:\\jeonsoohyun\\6_spring_project\\sns\\sns_workspace\\images/";
 	
 	// 집
-	 public static final String FILE_UPLOAD_PATH = "D:\\spring_img/";
+	 public static final String FILE_UPLOAD_PATH = "D:\\spring_img\\images/";
 	
 	// input: File 원본, userLoginId(폴더명)		output: 이미지 경로 
 	public String saveFile(String loginId, MultipartFile file) {
@@ -39,6 +41,36 @@ public class FileManagerService {
 		}
 		
 		return "/images/" + directoryName + "/" + file.getOriginalFilename();
+	}
+	
+	// input: ImagePath		output: x
+	public void deleteFile(String imagePath) { ///images/sooo_1706159478390/gg.jpg
+		// D:\memo_spirng_img\images/images/sooo_1706159478390/gg.jpg
+		// 주소에 겹치는 /images/를 지운다.	
+		Path path = Paths.get(FILE_UPLOAD_PATH + imagePath.replace("/images/", ""));
+	
+		// 삭제할 이미지 존재?
+		if (Files.exists(path)) {
+			try {
+				Files.delete(path);
+			} catch (IOException e) {
+				log.info("[파일 매니저 삭제] 이미지 삭제 실패. path():{}", path );
+				return;
+			}
+			
+			// 폴더 (디렉토리 삭제)
+			path = path.getParent();
+			if (Files.exists(path)) {
+				try {
+					Files.delete(path);
+				} catch (IOException e) {
+					log.info("[파일 매니저 삭제] 이미지 삭제 실패. path():{}", path );
+					return;
+				}
+			}
+		}
+		
+	
 	}
 }
 
